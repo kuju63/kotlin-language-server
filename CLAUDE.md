@@ -111,103 +111,26 @@ graph LR
 
 このプロジェクトは **GitHub Issueベースの開発フロー** と **Test-Driven Development (TDD)** を採用しています。
 
-### 開発プロセスのフロー
+詳細は **[CONTRIBUTING.md](./CONTRIBUTING.md)** を参照してください。
 
-```mermaid
-graph TD
-    A[GitHub Issue確認/作成] --> B[Issue番号付きブランチ作成]
-    B --> C[テストコード作成]
-    C --> D[テスト実行 - Red]
-    D --> E[実装コード追加]
-    E --> F[テスト実行 - Green]
-    F --> G{リファクタリング必要?}
-    G -->|はい| H[リファクタリング]
-    H --> F
-    G -->|いいえ| I[コミット with Issue番号]
-    I --> J[プルリクエスト作成]
-    J --> K[コードレビュー]
-    K --> L[マージ]
+### 重要な原則
+
+- **Issue駆動開発**: 新機能や改善は**GitHub Issueから開始**
+- **TDD**: **実装の前にテストを作成**（Red-Green-Refactor）
+- **Conventional Commits**: コミットメッセージとPRタイトルは英語で記述
+- **言語要件**: **Issue body and comments are written in English**
+
+### クイックリファレンス
+
+```bash
+# テストを書く → 実装 → コミット
+./gradlew test --tests <TestClassName>
+git commit -m "feat: add new feature #123"
 ```
 
-### 1. Issue駆動開発
+**コミットタイプ**: `feat`, `fix`, `docs`, `test`, `refactor`, `perf`, `chore`, `ci`
 
-- 新機能や改善は**GitHub Issueから開始**
-- Issueは仕様として機能する
-- 実装時は**Issue番号をコミットメッセージやコードコメントに含める**
-- 重要な設計判断や仕様の詳細をIssueコメントとして残す
-
-### 2. Test-Driven Development (TDD)
-
-- **実装の前にテストを作成**
-- 期待する振る舞いをテストコードで明確に定義
-- テストが失敗することを確認（**Red**）
-- 最小限の実装でテストをパスさせる（**Green**）
-- コードをリファクタリング（**Refactor**）
-- テストファイルの場所: `src/test/kotlin/com/kotlinls/`
-
-### 3. 実装手順の例
-
-1. GitHub Issueを確認・作成
-2. Issue番号付きのブランチを作成（例: `feature/123-add-completion`）
-3. テストを作成（`src/test/kotlin/com/kotlinls/lsp/CompletionTest.kt`）
-4. テストを実行して失敗を確認（`./gradlew test --tests CompletionTest`）
-5. 実装を追加（`src/main/kotlin/com/kotlinls/lsp/...`）
-6. テストをパスさせる
-7. コミット（メッセージ例: `feat: implement code completion #123`）
-8. プルリクエストを作成し、Issue番号を関連付ける
-
-### 4. コミットメッセージとPRタイトルのルール
-
-このプロジェクトでは、**Conventional Commits**に準拠したコミットメッセージとPRタイトルを使用します。
-
-**形式:**
-```
-<type>[optional scope]: <description>
-
-[optional body]
-
-[optional footer(s)]
-```
-
-**主なタイプ:**
-- `feat`: 新機能の追加
-- `fix`: バグ修正
-- `docs`: ドキュメントのみの変更
-- `style`: コードの意味に影響しない変更（フォーマット、空白、セミコロンなど）
-- `refactor`: バグ修正も機能追加もしないコード変更
-- `perf`: パフォーマンス改善
-- `test`: テストの追加や修正
-- `chore`: ビルドプロセスや補助ツールの変更
-- `ci`: CI設定ファイルやスクリプトの変更
-
-**コミットメッセージの例:**
-```
-feat: add code completion for function parameters
-fix: resolve NPE in hover provider
-docs: update README with installation instructions
-test: add unit tests for TextEditUtils
-refactor: extract common logic into utility class
-perf: optimize symbol indexing query
-chore: update Gradle dependencies
-```
-
-**Issue番号の含め方:**
-```
-feat: implement code completion #123
-fix: resolve crash on startup #456
-```
-
-**Breaking Changesの場合:**
-```
-feat!: change API signature for completion provider
-
-BREAKING CHANGE: CompletionProvider now requires additional parameter
-```
-
-**PRタイトル:**
-- PRタイトルも同じConventional Commits形式を使用
-- 例: `feat: add hover support for function declarations #123`
-- 複数のコミットを含むPRの場合、主な変更内容を反映したタイトルにする
+詳細な開発フロー、コミット規約、実装例は [CONTRIBUTING.md](./CONTRIBUTING.md) を参照してください。
 
 ---
 

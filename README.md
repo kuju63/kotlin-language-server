@@ -1,52 +1,52 @@
 # Kotlin Language Server
 
-Kotlin 2.0 K2 Analysis APIを活用した高性能Language Server実装（ベースプロジェクト）
+A high-performance Language Server implementation leveraging Kotlin 2.0 K2 Analysis API (Base Project)
 
-## 🎯 プロジェクト目標
+## 🎯 Project Goals
 
-開発者が求める主要機能を備えた実用的なKotlin Language Serverの実装：
+Build a practical Kotlin Language Server with essential features that developers need:
 
-### 必須機能（実装済みスケルトン）
+### Core Features (Skeleton Implemented)
 
-| 機能 | 優先度 | 目標レイテンシ | 状態 |
-|-----|--------|-------------|------|
-| **Code Completion** | Critical | < 100ms | ✅ スケルトン実装 |
-| **Go-to-Definition** | High | < 50ms | ✅ スケルトン実装 |
-| **Find References** | High | < 200ms | ✅ スケルトン実装 |
-| **Hover** | High | < 50ms | ✅ スケルトン実装 |
-| **Signature Help** | Medium | < 100ms | ✅ スケルトン実装 |
-| **Document Symbol** | Medium | < 300ms | ✅ スケルトン実装 |
-| **Workspace Symbol** | Low | < 1s | ✅ スケルトン実装 |
-| **Diagnostics** | High | < 500ms | ✅ スケルトン実装 |
-| **Formatting** | Medium | < 1s | ✅ スケルトン実装 |
-| **Code Action** | Medium | < 300ms | ✅ スケルトン実装 |
-| **Rename** | High | < 500ms | ✅ スケルトン実装 |
+| Feature | Priority | Target Latency | Status |
+|---------|----------|----------------|--------|
+| **Code Completion** | Critical | < 100ms | ✅ Skeleton Implemented |
+| **Go-to-Definition** | High | < 50ms | ✅ Skeleton Implemented |
+| **Find References** | High | < 200ms | ✅ Skeleton Implemented |
+| **Hover** | High | < 50ms | ✅ Skeleton Implemented |
+| **Signature Help** | Medium | < 100ms | ✅ Skeleton Implemented |
+| **Document Symbol** | Medium | < 300ms | ✅ Skeleton Implemented |
+| **Workspace Symbol** | Low | < 1s | ✅ Skeleton Implemented |
+| **Diagnostics** | High | < 500ms | ✅ Skeleton Implemented |
+| **Formatting** | Medium | < 1s | ✅ Skeleton Implemented |
+| **Code Action** | Medium | < 300ms | ✅ Skeleton Implemented |
+| **Rename** | High | < 500ms | ✅ Skeleton Implemented |
 
-### 高度な機能（将来実装予定）
+### Advanced Features (Planned for Future)
 
-- Semantic Tokens（セマンティックハイライト）
-- Inlay Hints（型ヒント、パラメータ名）
+- Semantic Tokens (semantic highlighting)
+- Inlay Hints (type hints, parameter names)
 - Call Hierarchy
 - Type Hierarchy
 - Document Links
 
-## 🏗️ プロジェクト構造
+## 🏗️ Project Structure
 
 ```
 kotlin-language-server/
 ├── src/
 │   ├── main/kotlin/com/kotlinls/
-│   │   ├── server/              # サーバー本体
-│   │   │   ├── Main.kt          # エントリーポイント
+│   │   ├── server/              # Server core
+│   │   │   ├── Main.kt          # Entry point
 │   │   │   └── KotlinLanguageServer.kt
-│   │   ├── lsp/                 # LSP機能実装
+│   │   ├── lsp/                 # LSP feature implementation
 │   │   │   ├── KotlinTextDocumentService.kt
 │   │   │   └── KotlinWorkspaceService.kt
-│   │   ├── analysis/            # K2 Analysis API連携
+│   │   ├── analysis/            # K2 Analysis API integration
 │   │   │   └── K2AnalysisProvider.kt
-│   │   ├── persistence/         # データベース層
+│   │   ├── persistence/         # Database layer
 │   │   │   └── DatabaseSchema.kt
-│   │   └── utils/               # ユーティリティ
+│   │   └── utils/               # Utilities
 │   │       └── LspUtils.kt
 │   └── test/kotlin/com/kotlinls/
 │       ├── server/
@@ -58,128 +58,128 @@ kotlin-language-server/
 └── README.md
 ```
 
-## 🚀 クイックスタート
+## 🚀 Quick Start
 
-### 前提条件
+### Prerequisites
 
-- JDK 17以上
-- Gradle 8.5以上（Gradle Wrapper付属）
+- JDK 17 or higher
+- Gradle 8.5 or higher (Gradle Wrapper included)
 
-### ビルド
+### Build
 
 ```bash
-# プロジェクトのビルド
+# Build the project
 ./gradlew assemble
 
-# テスト実行
+# Run tests
 ./gradlew test
 
-# ビルドとテストを同時実行
+# Build and test together
 ./gradlew build
 ```
 
-### 実行
+### Run
 
 ```bash
-# 開発モードで実行
+# Run in development mode
 ./gradlew run
 
-# Fat JARを生成
+# Generate Fat JAR
 ./gradlew shadowJar
 
-# JARから実行
+# Run from JAR
 java -Xmx2G -jar build/libs/kotlin-language-server-0.1.0-SNAPSHOT.jar
 ```
 
-## 🧪 テスト
+## 🧪 Testing
 
 ```bash
-# 全テスト実行
+# Run all tests
 ./gradlew test
 
-# 特定のテストクラスのみ実行
+# Run specific test class
 ./gradlew test --tests KotlinLanguageServerTest
 
-# テストレポート確認
+# View test report
 open build/reports/tests/test/index.html
 ```
 
-## 📦 技術スタック
+## 📦 Technology Stack
 
-- **言語**: Kotlin 2.0.21
-- **ビルドツール**: Gradle 8.5 (Kotlin DSL)
+- **Language**: Kotlin 2.0.21
+- **Build Tool**: Gradle 8.5 (Kotlin DSL)
 - **JDK**: 17
-- **LSPフレームワーク**: Eclipse LSP4J 0.21.2
-- **コンパイラAPI**: Kotlin K2 Analysis API
-- **データベース**: SQLite 3.45 (WALモード)
-- **ロギング**: Logback + kotlin-logging
-- **テスト**: JUnit 5 + MockK
+- **LSP Framework**: Eclipse LSP4J 0.21.2
+- **Compiler API**: Kotlin K2 Analysis API
+- **Database**: SQLite 3.45 (WAL mode)
+- **Logging**: Logback + kotlin-logging
+- **Testing**: JUnit 5 + MockK
 
-## 🔧 開発
+## 🔧 Development
 
-### IntelliJ IDEAでの開発
+### Development with IntelliJ IDEA
 
-1. プロジェクトを開く: `File > Open` → `kotlin-language-server`
-2. Gradleプロジェクトとして認識される
-3. `Main.kt` を実行/デバッグ
+1. Open the project: `File > Open` → `kotlin-language-server`
+2. It will be recognized as a Gradle project
+3. Run/Debug `Main.kt`
 
-### 機能の追加
+### Adding Features
 
-スケルトン実装をベースに、実際の機能を実装：
+Build on the skeleton implementation to add real functionality:
 
-1. **K2 Analysis API統合** (`K2AnalysisProvider.kt`)
-   - スタンドアロンセッションの構築
-   - シンボル解決、型推論の実装
+1. **K2 Analysis API Integration** (`K2AnalysisProvider.kt`)
+   - Build standalone session
+   - Implement symbol resolution and type inference
 
-2. **SQLite永続化** (`DatabaseSchema.kt`)
-   - シンボルインデックスの保存
-   - 参照情報の管理
+2. **SQLite Persistence** (`DatabaseSchema.kt`)
+   - Save symbol index
+   - Manage reference information
 
-3. **補完機能** (`KotlinTextDocumentService.kt`)
-   - スコープ内シンボルの取得
-   - スマート補完の実装
+3. **Completion Feature** (`KotlinTextDocumentService.kt`)
+   - Get symbols in scope
+   - Implement smart completion
 
-## 📋 実装ロードマップ
+## 📋 Implementation Roadmap
 
-### Phase 1: 基盤構築 ✅ 完了
+### Phase 1: Foundation ✅ Complete
 
-- [x] LSP4Jサーバー骨格
-- [x] 主要機能のスケルトン実装
-- [x] テストフレームワークのセットアップ
-- [x] ビルド・テスト環境の整備
+- [x] LSP4J server skeleton
+- [x] Skeleton implementation of core features
+- [x] Test framework setup
+- [x] Build and test environment
 
-### Phase 2: コア機能実装（次のステップ）
+### Phase 2: Core Feature Implementation (Next Steps)
 
-- [ ] K2 Analysis API統合
-  - [ ] スタンドアロンセッション構築
-  - [ ] 基本的なシンボル解決
-  - [ ] 型推論の実装
-- [ ] 補完機能の実装
-  - [ ] スコープ内シンボルの取得
-  - [ ] トリガー文字対応
-- [ ] 定義ジャンプの実装
-- [ ] ホバー情報の実装
+- [ ] K2 Analysis API integration
+  - [ ] Standalone session construction
+  - [ ] Basic symbol resolution
+  - [ ] Type inference implementation
+- [ ] Completion feature implementation
+  - [ ] Get symbols in scope
+  - [ ] Trigger character support
+- [ ] Go-to-definition implementation
+- [ ] Hover information implementation
 
-### Phase 3: 最適化
+### Phase 3: Optimization
 
-- [ ] SQLite永続化
-- [ ] インクリメンタル更新
-- [ ] キャッシュ層の実装
-- [ ] パフォーマンステスト
+- [ ] SQLite persistence
+- [ ] Incremental updates
+- [ ] Cache layer implementation
+- [ ] Performance testing
 
-## 📊 パフォーマンス目標
+## 📊 Performance Goals
 
-| メトリクス | 目標値 | 現状 |
-|-----------|-------|------|
-| 補完レイテンシ | < 100ms | - |
-| 定義ジャンプ | < 300ms | - |
-| 初期インデックス (10k LOC) | < 10s | - |
-| メモリ使用量 (10k LOC) | < 500MB | - |
-| テスト実行時間 | < 10s | ✅ < 5s |
+| Metric | Target | Current |
+|--------|--------|---------|
+| Completion latency | < 100ms | - |
+| Go-to-definition | < 300ms | - |
+| Initial indexing (10k LOC) | < 10s | - |
+| Memory usage (10k LOC) | < 500MB | - |
+| Test execution time | < 10s | ✅ < 5s |
 
-## 🧩 依存関係
+## 🧩 Dependencies
 
-主要な依存関係：
+Key dependencies:
 
 ```kotlin
 // Kotlin & Compiler
@@ -202,15 +202,24 @@ junit-jupiter: 5.10.1
 mockk: 1.13.8
 ```
 
-## 🤝 コントリビューション
+## 🤝 Contributing
 
-このプロジェクトはベースプロジェクトです。Phase 2以降の実装にご協力いただける方を募集しています。
+Contributions are welcome! Please see **[CONTRIBUTING.md](./CONTRIBUTING.md)** for details.
 
-## 📄 ライセンス
+This is a base project. We are looking for contributors to help with Phase 2 and beyond implementation.
+
+### Contribution Guidelines
+
+- **Issue-Driven Development**: Start with a GitHub Issue
+- **Test-Driven Development (TDD)**: Test-first approach
+- **Conventional Commits**: Standard commit message format
+- **English for issues and PRs**: Issues, PRs, and commit messages should be written in English
+
+## 📄 License
 
 MIT License
 
-## 📚 参考資料
+## 📚 Resources
 
 - [Kotlin Analysis API Documentation](https://kotlin.github.io/analysis-api/)
 - [Eclipse LSP4J](https://github.com/eclipse/lsp4j)
@@ -219,6 +228,6 @@ MIT License
 
 ---
 
-**現在の状態**: ✅ ビルド・テストが正常に完了するベースプロジェクト
+**Current Status**: ✅ Base project with successful builds and tests
 
-次のステップ: Phase 2 - K2 Analysis API統合とコア機能実装
+Next Steps: Phase 2 - K2 Analysis API integration and core feature implementation
