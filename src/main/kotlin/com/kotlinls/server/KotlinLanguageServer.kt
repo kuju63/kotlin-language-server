@@ -160,9 +160,9 @@ class KotlinLanguageServer : LanguageServer, LanguageClientAware {
             
             // 20. Diagnostics (診断情報)
             diagnosticProvider = DiagnosticRegistrationOptions().apply {
-                setIdentifier("kotlin-diagnostics")
-                setInterFileDependencies(true)
-                setWorkspaceDiagnostics(true)
+                identifier = "kotlin-diagnostics"
+                isInterFileDependencies = true
+                isWorkspaceDiagnostics = true
             }
             
             // Workspace capabilities
