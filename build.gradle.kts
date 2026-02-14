@@ -1,12 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "2.0.21"
+    kotlin("jvm") version "2.3.10"
     application
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-group = "com.kotlinls"
+group = "io.github.kuju63.kotlin.lang"
 version = "0.1.0-SNAPSHOT"
 
 repositories {
@@ -16,35 +16,35 @@ repositories {
 
 dependencies {
     // Kotlin Standard Library
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.21")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.21")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.3.10")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:2.3.10")
     
     // Language Server Protocol (LSP4J)
-    implementation("org.eclipse.lsp4j:org.eclipse.lsp4j:0.21.2")
-    implementation("org.eclipse.lsp4j:org.eclipse.lsp4j.jsonrpc:0.21.2")
+    implementation("org.eclipse.lsp4j:org.eclipse.lsp4j:1.0.0")
+    implementation("org.eclipse.lsp4j:org.eclipse.lsp4j.jsonrpc:1.0.0")
     
     // SQLite for persistence
-    implementation("org.xerial:sqlite-jdbc:3.45.0.0")
+    implementation("org.xerial:sqlite-jdbc:3.51.2.0")
     
     // Coroutines for async operations
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     
     // Logging
-    implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
-    implementation("ch.qos.logback:logback-classic:1.4.14")
-    implementation("org.slf4j:slf4j-api:2.0.9")
+    implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
+    implementation("ch.qos.logback:logback-classic:1.5.29")
+    implementation("org.slf4j:slf4j-api:2.0.17")
     
     // Testing
     testImplementation(kotlin("test"))
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.1")
-    testImplementation("io.mockk:mockk:1.13.8")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.14.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.14.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.14.2")
+    testImplementation("io.mockk:mockk:1.14.9")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
 }
 
 application {
-    mainClass.set("com.kotlinls.server.MainKt")
+    mainClass.set("io.github.kuju63.kotlin.lang.server.MainKt")
 }
 
 tasks.test {
@@ -61,9 +61,9 @@ tasks.test {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "17"
-        freeCompilerArgs = listOf("-Xjsr305=strict")
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+        freeCompilerArgs.set(listOf("-Xjsr305=strict"))
     }
 }
 
@@ -71,20 +71,37 @@ tasks.shadowJar {
     archiveBaseName.set("kotlin-language-server")
     archiveClassifier.set("")
     archiveVersion.set(version.toString())
-    
+
     manifest {
-        attributes["Main-Class"] = "com.kotlinls.server.MainKt"
+        attributes["Main-Class"] = "io.github.kuju63.kotlin.lang.server.MainKt"
     }
-    
+
     // Avoid conflicts with signed JARs
     exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
-    
+
     mergeServiceFiles()
+}
+
+// Fix task dependencies for shadow jar
+tasks.named("distZip") {
+    dependsOn(tasks.shadowJar)
+}
+
+tasks.named("distTar") {
+    dependsOn(tasks.shadowJar)
+}
+
+tasks.named("startScripts") {
+    dependsOn(tasks.shadowJar)
+}
+
+tasks.named("startShadowScripts") {
+    dependsOn(tasks.jar)
 }
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 

@@ -1,4 +1,4 @@
-package com.kotlinls.server
+package io.github.kuju63.kotlin.lang.server
 
 import org.eclipse.lsp4j.*
 import org.junit.jupiter.api.Test

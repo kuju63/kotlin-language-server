@@ -1,6 +1,6 @@
-package com.kotlinls.lsp
+package io.github.kuju63.kotlin.lang.lsp
 
-import com.kotlinls.server.KotlinLanguageServer
+import io.github.kuju63.kotlin.lang.server.KotlinLanguageServer
 import io.mockk.mockk
 import org.eclipse.lsp4j.*
 import org.junit.jupiter.api.Test

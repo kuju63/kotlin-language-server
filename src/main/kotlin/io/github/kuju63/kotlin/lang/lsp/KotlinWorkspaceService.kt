@@ -1,7 +1,7 @@
-package com.kotlinls.lsp
+package io.github.kuju63.kotlin.lang.lsp
 
-import com.kotlinls.server.KotlinLanguageServer
-import mu.KotlinLogging
+import io.github.kuju63.kotlin.lang.server.KotlinLanguageServer
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.eclipse.lsp4j.*
 import org.eclipse.lsp4j.jsonrpc.messages.Either
 import org.eclipse.lsp4j.services.WorkspaceService

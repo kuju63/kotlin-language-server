@@ -1,6 +1,6 @@
-package com.kotlinls.analysis
+package io.github.kuju63.kotlin.lang.analysis
 
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 

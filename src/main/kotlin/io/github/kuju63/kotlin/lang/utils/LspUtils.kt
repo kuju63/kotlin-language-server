@@ -1,8 +1,7 @@
-package com.kotlinls.utils
+package io.github.kuju63.kotlin.lang.utils
 
 import org.eclipse.lsp4j.Position
 import org.eclipse.lsp4j.Range
-import org.jetbrains.kotlin.psi.KtFile
 
 /**
  * LSP Position/Range と PSI Offset の相互変換ユーティリティ

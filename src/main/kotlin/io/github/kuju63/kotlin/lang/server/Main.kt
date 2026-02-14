@@ -1,6 +1,6 @@
-package com.kotlinls.server
+package io.github.kuju63.kotlin.lang.server
 
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.eclipse.lsp4j.launch.LSPLauncher
 import java.io.InputStream
 import java.io.OutputStream

@@ -1,8 +1,8 @@
-package com.kotlinls.server
+package io.github.kuju63.kotlin.lang.server
 
-import com.kotlinls.lsp.KotlinTextDocumentService
-import com.kotlinls.lsp.KotlinWorkspaceService
-import mu.KotlinLogging
+import io.github.kuju63.kotlin.lang.lsp.KotlinTextDocumentService
+import io.github.kuju63.kotlin.lang.lsp.KotlinWorkspaceService
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.eclipse.lsp4j.*
 import org.eclipse.lsp4j.jsonrpc.messages.Either
 import org.eclipse.lsp4j.services.*
@@ -159,34 +159,35 @@ class KotlinLanguageServer : LanguageServer, LanguageClientAware {
             })
             
             // 20. Diagnostics (診断情報)
-            diagnosticProvider = DiagnosicRegistrationOptions().apply {
-                interFileDependencies = true
-                workspaceDiagnostics = false
+            diagnosticProvider = DiagnosticRegistrationOptions().apply {
+                identifier = "kotlin-diagnostics"
+                isInterFileDependencies = true
+                isWorkspaceDiagnostics = true
             }
             
             // Workspace capabilities
             workspace = WorkspaceServerCapabilities().apply {
                 workspaceFolders = WorkspaceFoldersOptions().apply {
                     supported = true
-                    changeNotifications = Either.forLeft(true)
+                    changeNotifications = Either.forRight(true)
                 }
-                
+
                 fileOperations = FileOperationsServerCapabilities().apply {
-                    didCreate = FileOperationRegistrationOptions().apply {
+                    didCreate = FileOperationOptions().apply {
                         filters = listOf(
                             FileOperationFilter().apply {
                                 pattern = FileOperationPattern("**/*.kt")
                             }
                         )
                     }
-                    didRename = FileOperationRegistrationOptions().apply {
+                    didRename = FileOperationOptions().apply {
                         filters = listOf(
                             FileOperationFilter().apply {
                                 pattern = FileOperationPattern("**/*.kt")
                             }
                         )
                     }
-                    didDelete = FileOperationRegistrationOptions().apply {
+                    didDelete = FileOperationOptions().apply {
                         filters = listOf(
                             FileOperationFilter().apply {
                                 pattern = FileOperationPattern("**/*.kt")
