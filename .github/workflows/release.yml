@@ -1,0 +1,166 @@
+name: Release
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      actions: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # Full history for semantic versioning
+
+      - name: Check if release should be created
+        id: check_commit
+        run: |
+          # Get the latest commit message
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "Latest commit message: $COMMIT_MSG"
+
+          # Check if commit type should trigger a release
+          # Release triggers: feat, fix, or BREAKING CHANGE
+          if echo "$COMMIT_MSG" | grep -qE '^(feat|fix)(\(.*\))?!?:' || echo "$COMMIT_MSG" | grep -q 'BREAKING CHANGE:'; then
+            echo "should_release=true" >> $GITHUB_OUTPUT
+            echo "✅ Commit type triggers release"
+          else
+            echo "should_release=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ Commit type does not trigger release (docs/chore/test/ci/etc)"
+          fi
+
+      - name: Set up JDK 21
+        if: steps.check_commit.outputs.should_release == 'true'
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        if: steps.check_commit.outputs.should_release == 'true'
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Calculate semantic version
+        if: steps.check_commit.outputs.should_release == 'true'
+        id: version
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          dry_run: true
+          default_bump: patch
+          # Prefix for version tags
+          tag_prefix: v
+          # Custom release rules
+          custom_release_rules: |
+            feat:minor:Features
+            fix:patch:Bug Fixes
+            perf:patch:Performance Improvements
+            docs:false:Documentation
+            style:false:Styles
+            refactor:false:Code Refactoring
+            test:false:Tests
+            chore:false:Chores
+            ci:false:CI/CD
+
+      - name: Build Fat JAR with version
+        if: steps.check_commit.outputs.should_release == 'true'
+        env:
+          VERSION: ${{ steps.version.outputs.new_version }}
+        run: |
+          echo "Building version: $VERSION"
+          ./gradlew clean shadowJar --no-daemon --stacktrace
+
+      - name: Generate changelog
+        if: steps.check_commit.outputs.should_release == 'true'
+        id: changelog
+        uses: mikepenz/release-changelog-builder-action@v4
+        with:
+          configuration: |
+            {
+              "categories": [
+                {
+                  "title": "## 🚀 Features",
+                  "labels": ["feat", "feature"]
+                },
+                {
+                  "title": "## 🐛 Bug Fixes",
+                  "labels": ["fix", "bug"]
+                },
+                {
+                  "title": "## ⚡ Performance Improvements",
+                  "labels": ["perf", "performance"]
+                },
+                {
+                  "title": "## 📝 Documentation",
+                  "labels": ["docs", "documentation"]
+                },
+                {
+                  "title": "## 🔨 Refactoring",
+                  "labels": ["refactor"]
+                },
+                {
+                  "title": "## 🧪 Tests",
+                  "labels": ["test"]
+                },
+                {
+                  "title": "## 🔧 Chores",
+                  "labels": ["chore"]
+                },
+                {
+                  "title": "## 🤖 CI/CD",
+                  "labels": ["ci"]
+                }
+              ],
+              "template": "#{{CHANGELOG}}",
+              "pr_template": "- #{{TITLE}} (##{{NUMBER}})"
+            }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Git tag
+        if: steps.check_commit.outputs.should_release == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v${{ steps.version.outputs.new_version }}" -m "Release v${{ steps.version.outputs.new_version }}"
+          git push origin "v${{ steps.version.outputs.new_version }}"
+
+      - name: Create GitHub Release
+        if: steps.check_commit.outputs.should_release == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.new_version }}
+          name: v${{ steps.version.outputs.new_version }}
+          body: |
+            # Kotlin Language Server v${{ steps.version.outputs.new_version }}
+
+            ${{ steps.changelog.outputs.changelog }}
+
+            ## 📦 Installation
+
+            Download the JAR file and run:
+            ```bash
+            java -Xmx2G -jar kotlin-language-server-${{ steps.version.outputs.new_version }}.jar
+            ```
+
+            ## 📋 Requirements
+
+            - JDK 21 or higher
+
+            ---
+
+            🤖 Generated with [Claude Code](https://claude.com/claude-code)
+          files: |
+            build/libs/kotlin-language-server-*.jar
+          draft: false
+          prerelease: false
+          generate_release_notes: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

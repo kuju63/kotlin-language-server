@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      actions: read
+      checks: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # Full history for better error context
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Build project
+        run: ./gradlew assemble --no-daemon --stacktrace
+
+      - name: Run tests
+        run: ./gradlew test --no-daemon --stacktrace
+
+      - name: Generate test report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: JUnit Test Results
+          path: '**/build/test-results/test/TEST-*.xml'
+          reporter: java-junit
+          fail-on-error: false
+
+      - name: Build Fat JAR
+        run: ./gradlew shadowJar --no-daemon --stacktrace
+
+      - name: Verify JAR integrity
+        run: |
+          JAR_FILE=$(find build/libs -name "kotlin-language-server-*.jar" -type f)
+          echo "Checking JAR: $JAR_FILE"
+
+          # Verify JAR exists
+          if [ ! -f "$JAR_FILE" ]; then
+            echo "❌ JAR file not found!"
+            exit 1
+          fi
+
+          # Extract and verify MANIFEST.MF
+          MANIFEST=$(unzip -p "$JAR_FILE" META-INF/MANIFEST.MF)
+          echo "$MANIFEST"
+
+          # Check Main-Class attribute
+          if echo "$MANIFEST" | grep -q "Main-Class: io.github.kuju63.kotlin.lang.server.MainKt"; then
+            echo "✅ Main-Class attribute found"
+          else
+            echo "❌ Main-Class attribute not found or incorrect!"
+            exit 1
+          fi
+
+          # Check Implementation-Version attribute
+          if echo "$MANIFEST" | grep -q "Implementation-Version:"; then
+            echo "✅ Implementation-Version attribute found"
+          else
+            echo "⚠️ Implementation-Version attribute not found (warning only)"
+          fi
+
+          echo "✅ JAR integrity check passed"
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: '**/build/test-results/test/'
+          retention-days: 30
+
+      - name: Upload JAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kotlin-language-server-jar
+          path: build/libs/kotlin-language-server-*.jar
+          retention-days: 7

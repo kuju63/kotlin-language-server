@@ -1,0 +1,49 @@
+name: PR Title Check
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+
+jobs:
+  validate-pr-title:
+    name: Validate PR Title
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: read
+
+    steps:
+      - name: Check PR title format
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # Allowed types based on Conventional Commits and CONTRIBUTING.md
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            chore
+            ci
+          # Require subject to start with uppercase letter
+          subjectPattern: ^[A-Z].+$
+          subjectPatternError: |
+            The subject "{subject}" found in the pull request title "{title}"
+            didn't match the configured pattern. Please ensure that the subject
+            starts with an uppercase letter.
+          # Scope is optional
+          requireScope: false
+          # Skip validation for bot PRs (e.g., Dependabot)
+          ignoreLabels: |
+            bot
+            dependencies
+          # Header length check (GitHub PR title limit is 256, we use 200)
+          headerPattern: '^(\w+)(\(\w+\))?: .{1,200}$'
+          headerPatternCorrespondence: type, scope, subject

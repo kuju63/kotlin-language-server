@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.time.Instant
 
 plugins {
     kotlin("jvm") version "2.3.10"
@@ -7,7 +8,7 @@ plugins {
 }
 
 group = "io.github.kuju63.kotlin.lang"
-version = "0.1.0-SNAPSHOT"
+version = System.getenv("VERSION") ?: "0.1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -74,6 +75,12 @@ tasks.shadowJar {
 
     manifest {
         attributes["Main-Class"] = "io.github.kuju63.kotlin.lang.server.MainKt"
+        attributes["Implementation-Title"] = "Kotlin Language Server"
+        attributes["Implementation-Version"] = version
+        attributes["Implementation-Vendor"] = "io.github.kuju63"
+        attributes["Build-Date"] = Instant.now().toString()
+        attributes["Build-JDK"] = "${System.getProperty("java.version")} (${System.getProperty("java.vendor")})"
+        attributes["Gradle-Version"] = gradle.gradleVersion
     }
 
     // Avoid conflicts with signed JARs
