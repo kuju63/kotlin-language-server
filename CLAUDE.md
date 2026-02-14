@@ -64,7 +64,7 @@ java -Xmx2G -jar build/libs/kotlin-language-server-0.1.0-SNAPSHOT.jar
    - `KotlinTextDocumentService.kt`: テキストドキュメント関連の機能（補完、ホバー、定義ジャンプなど）
    - `KotlinWorkspaceService.kt`: ワークスペース関連の機能
 
-3. **`analysis/`**: K2 Analysis API統合ポイント（Phase 2で実装予定）
+3. **`analysis/`**: K2 Analysis API統合ポイント
    - `K2AnalysisProvider.kt`: Kotlinコンパイラの型解析機能へのインターフェース
 
 4. **`persistence/`**: SQLiteベースのインデックス/キャッシュ層
@@ -158,14 +158,54 @@ git commit -m "feat: add new feature #123"
 
 ## パフォーマンス目標
 
-| 機能         | 目標レイテンシ | 優先度   |
-| ------------ | -------------- | -------- |
-| 補完         | < 100ms        | Critical |
-| 定義ジャンプ | < 50ms         | High     |
-| 参照検索     | < 200ms        | High     |
-| ホバー       | < 50ms         | High     |
+| 機能     | 目標レイテンシ | 優先度      |
+|--------|---------|----------|
+| 補完     | < 100ms | Critical |
+| 定義ジャンプ | < 50ms  | High     |
+| 参照検索   | < 200ms | High     |
+| ホバー    | < 50ms  | High     |
 
 これらの目標は、実際のIDEでの使用体験を損なわないために設定されています。
+
+---
+
+## 開発ツール
+
+### Serena MCP サーバー（推奨）
+
+このプロジェクトでは、**Serena MCP サーバー**を使用してClaude Codeの開発体験を強化することを推奨します。Serenaは、IDE レベルのセマンティックコード理解機能を提供し、大規模なコードベースでの作業を効率化します。
+
+**主な機能:**
+- **シンボルレベルのコード操作**: `find_symbol`、`find_referencing_symbols` など
+- **Kotlin サポート**: 30+ のプログラミング言語に対応（Kotlin 含む）
+- **高度なコード分析**: IDE のような正確な参照検索とナビゲーション
+
+**セットアップ状況:**
+- プロジェクト設定ファイル: `.serena/project.yml` （読み取り専用モードで構成済み）
+- MCP サーバー登録: Claude Code セッション外で実行が必要
+
+**初回セットアップ手順:**
+
+1. Claude Code セッションを終了
+2. ターミナルで MCP サーバーを登録：
+   ```bash
+   claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project-from-cwd
+   ```
+3. 登録確認：
+   ```bash
+   claude mcp list
+   ```
+4. Claude Code を再起動
+
+**使用例:**
+```
+"find_symbol ツールで KotlinLanguageServer クラスを検索してください"
+"KotlinTextDocumentService の参照を find_referencing_symbols で探してください"
+```
+
+**参考リンク:**
+- [Serena GitHub](https://github.com/oraios/serena)
+- [公式ドキュメント](https://oraios.github.io/serena/)
 
 ---
 

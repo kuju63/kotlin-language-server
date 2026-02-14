@@ -1,0 +1,15 @@
+# Serena プロジェクト設定
+# このファイルは kotlin-language-server プロジェクト用の Serena 設定です
+
+# セキュリティのため、最初は読み取り専用モードで開始
+# 必要に応じて false に変更してください
+read_only: true
+
+# プロジェクト名
+project_name: kotlin-language-server
+
+# プロジェクトの説明
+description: "Kotlin 2.0 K2 Analysis API を活用した高性能 Language Server 実装"
+
+# 言語設定（Kotlin をメインとして扱う）
+primary_language: kotlin

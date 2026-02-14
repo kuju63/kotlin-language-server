@@ -79,3 +79,15 @@ temp/
 .env
 .env.*
 local.properties
+
+# =========================
+# Serena (MCP Server)
+# =========================
+# キャッシュとローカル設定のみを無視
+# プロジェクト設定ファイル (.serena/project.yml) は共有するためコミットする
+.serena/cache/
+.serena/local.yml
+.serena/*.log
+.serena/*.db
+.serena/*.db-wal
+.serena/*.db-shm
