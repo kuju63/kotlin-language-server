@@ -1,4 +1,4 @@
-package com.kotlinls.persistence
+package io.github.kuju63.kotlin.lang.persistence
 
 /**
  * SQLiteデータベーススキーマ定義

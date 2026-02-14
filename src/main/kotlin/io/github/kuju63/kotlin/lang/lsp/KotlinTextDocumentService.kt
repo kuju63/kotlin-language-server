@@ -1,8 +1,8 @@
-package com.kotlinls.lsp
+package io.github.kuju63.kotlin.lang.lsp
 
-import com.kotlinls.server.KotlinLanguageServer
-import com.kotlinls.utils.PositionUtils
-import com.kotlinls.utils.TextEditUtils
+import io.github.kuju63.kotlin.lang.server.KotlinLanguageServer
+import io.github.kuju63.kotlin.lang.utils.PositionUtils
+import io.github.kuju63.kotlin.lang.utils.TextEditUtils
 import mu.KotlinLogging
 import org.eclipse.lsp4j.*
 import org.eclipse.lsp4j.jsonrpc.messages.Either

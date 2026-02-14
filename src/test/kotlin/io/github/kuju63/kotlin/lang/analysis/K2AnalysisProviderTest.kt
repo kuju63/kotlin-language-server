@@ -1,4 +1,4 @@
-package com.kotlinls.analysis
+package io.github.kuju63.kotlin.lang.analysis
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*

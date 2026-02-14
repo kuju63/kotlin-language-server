@@ -1,4 +1,4 @@
-package com.kotlinls.analysis
+package io.github.kuju63.kotlin.lang.analysis
 
 import mu.KotlinLogging
 
