@@ -31,7 +31,7 @@ dependencies {
     
     // Logging
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
-    implementation("ch.qos.logback:logback-classic:1.4.14")
+    implementation("ch.qos.logback:logback-classic:1.5.13")
     implementation("org.slf4j:slf4j-api:2.0.9")
     
     // Testing
@@ -61,9 +61,9 @@ tasks.test {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "17"
-        freeCompilerArgs = listOf("-Xjsr305=strict")
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        freeCompilerArgs.set(listOf("-Xjsr305=strict"))
     }
 }
 
@@ -71,15 +71,32 @@ tasks.shadowJar {
     archiveBaseName.set("kotlin-language-server")
     archiveClassifier.set("")
     archiveVersion.set(version.toString())
-    
+
     manifest {
         attributes["Main-Class"] = "com.kotlinls.server.MainKt"
     }
-    
+
     // Avoid conflicts with signed JARs
     exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
-    
+
     mergeServiceFiles()
+}
+
+// Fix task dependencies for shadow jar
+tasks.named("distZip") {
+    dependsOn(tasks.shadowJar)
+}
+
+tasks.named("distTar") {
+    dependsOn(tasks.shadowJar)
+}
+
+tasks.named("startScripts") {
+    dependsOn(tasks.shadowJar)
+}
+
+tasks.named("startShadowScripts") {
+    dependsOn(tasks.jar)
 }
 
 java {

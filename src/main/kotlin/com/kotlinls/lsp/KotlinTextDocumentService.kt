@@ -6,6 +6,7 @@ import com.kotlinls.utils.TextEditUtils
 import mu.KotlinLogging
 import org.eclipse.lsp4j.*
 import org.eclipse.lsp4j.jsonrpc.messages.Either
+import org.eclipse.lsp4j.jsonrpc.messages.Either3
 import org.eclipse.lsp4j.services.TextDocumentService
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
@@ -254,7 +255,7 @@ class KotlinTextDocumentService(
                 // スケルトン実装: サンプルホバー情報
                 Hover().apply {
                     contents = Either.forLeft(
-                        MarkedString("kotlin", "fun example(): String")
+                        listOf(Either.forLeft("fun example(): String"))
                     )
                 }
             } catch (e: Exception) {
@@ -401,7 +402,7 @@ class KotlinTextDocumentService(
     
     // ========== 9. Rename ==========
     
-    override fun prepareRename(params: PrepareRenameParams): CompletableFuture<Either<Range, PrepareRenameResult>?> {
+    override fun prepareRename(params: PrepareRenameParams): CompletableFuture<Either3<Range, PrepareRenameResult, PrepareRenameDefaultBehavior>> {
         return CompletableFuture.supplyAsync {
             try {
                 logger.debug { "Prepare rename: ${params.textDocument.uri}" }
@@ -409,10 +410,10 @@ class KotlinTextDocumentService(
                 // TODO: リネーム可能性をチェック
                 
                 // スケルトン実装: 常に許可
-                Either.forLeft(Range(params.position, params.position))
+                Either3.forFirst(Range(params.position, params.position))
             } catch (e: Exception) {
                 logger.error(e) { "Error during prepare rename" }
-                null
+                throw e
             }
         }
     }

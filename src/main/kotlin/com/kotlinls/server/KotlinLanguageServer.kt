@@ -159,34 +159,35 @@ class KotlinLanguageServer : LanguageServer, LanguageClientAware {
             })
             
             // 20. Diagnostics (診断情報)
-            diagnosticProvider = DiagnosicRegistrationOptions().apply {
-                interFileDependencies = true
-                workspaceDiagnostics = false
+            diagnosticProvider = DiagnosticRegistrationOptions().apply {
+                setIdentifier("kotlin-diagnostics")
+                setInterFileDependencies(true)
+                setWorkspaceDiagnostics(true)
             }
             
             // Workspace capabilities
             workspace = WorkspaceServerCapabilities().apply {
                 workspaceFolders = WorkspaceFoldersOptions().apply {
                     supported = true
-                    changeNotifications = Either.forLeft(true)
+                    changeNotifications = Either.forRight(true)
                 }
-                
+
                 fileOperations = FileOperationsServerCapabilities().apply {
-                    didCreate = FileOperationRegistrationOptions().apply {
+                    didCreate = FileOperationOptions().apply {
                         filters = listOf(
                             FileOperationFilter().apply {
                                 pattern = FileOperationPattern("**/*.kt")
                             }
                         )
                     }
-                    didRename = FileOperationRegistrationOptions().apply {
+                    didRename = FileOperationOptions().apply {
                         filters = listOf(
                             FileOperationFilter().apply {
                                 pattern = FileOperationPattern("**/*.kt")
                             }
                         )
                     }
-                    didDelete = FileOperationRegistrationOptions().apply {
+                    didDelete = FileOperationOptions().apply {
                         filters = listOf(
                             FileOperationFilter().apply {
                                 pattern = FileOperationPattern("**/*.kt")
