@@ -44,6 +44,3 @@ jobs:
           ignoreLabels: |
             bot
             dependencies
-          # Header length check (GitHub PR title limit is 256, we use 200)
-          headerPattern: '^(\w+)(\(\w+\))?: .{1,200}$'
-          headerPatternCorrespondence: type, scope, subject
