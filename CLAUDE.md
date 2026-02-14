@@ -174,6 +174,7 @@ git commit -m "feat: add new feature #123"
 - **README.md**: プロジェクトの概要と使用方法
 - **BUILD_INSTRUCTIONS.md**: 詳細なビルド手順と環境設定
 - **GitHub Issues**: 機能リクエスト、バグレポート、実装の進捗
+- **その他調査レポート**: docs/additional-docs に事前調査レポートが含まれており、APIリファレンスなどの参考となる
 
 ---
 
