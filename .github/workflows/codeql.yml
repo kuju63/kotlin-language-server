@@ -88,16 +88,21 @@ jobs:
       if: matrix.language == 'java-kotlin'
       uses: actions/setup-java@v5.2.0
       with:
-        java-version: 21
-        distribution: temurin
-        cache: gradle
-        cache-dependency-path: ${{ github.workspace }}/build.gradle.kts
+        java-version: '21'
+        distribution: 'temurin'
+        cache: 'gradle'
+
+    - name: Setup Gradle 8.12
+      if: matrix.language == 'java-kotlin'
+      uses: gradle/actions/setup-gradle@v5
+      with:
+        gradle-version: '8.12'
       
     - name: Run manual build steps
       if: matrix.build-mode == 'manual' && matrix.language == 'java-kotlin'
       shell: bash
       run: |
-        ./gradlew build
+        gradle build
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4
