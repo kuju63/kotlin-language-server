@@ -46,16 +46,12 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v4
 
-    # Sets up the detekt cli
-    - name: Setup Detekt
-      run: |
-        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-        brew install detekt
-
     # Performs static analysis using Detekt
     - name: Run Detekt
       continue-on-error: true
       run: |
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+        brew install detekt
         detekt --input ${{ github.workspace }} --jvm-target 21 --report sarif:${{ github.workspace }}/detekt.sarif.json
 
     # Modifies the SARIF output produced by Detekt so that absolute URIs are relative
