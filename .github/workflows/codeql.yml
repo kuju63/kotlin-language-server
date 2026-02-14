@@ -89,6 +89,7 @@ jobs:
       uses: actions/setup-java@v5.2.0
       with:
         java-version: 21
+        distribution: temurin
         cache: gradle
         cache-dependency-path: ${{ github.workspace }}/build.gradle.kts
       
