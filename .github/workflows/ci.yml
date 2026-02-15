@@ -46,7 +46,7 @@ jobs:
         run: gradle test --no-daemon --stacktrace
 
       - name: Generate test report
-        uses: dorny/test-reporter@v1.9.1
+        uses: dorny/test-reporter@v2.5.0
         if: always()
         with:
           name: JUnit Test Results
