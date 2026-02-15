@@ -28,16 +28,7 @@ jobs:
           # Prefix for version tags
           tag_prefix: v
           # Custom release rules
-          custom_release_rules: |
-            feat:minor:Features
-            fix:patch:Bug Fixes
-            perf:patch:Performance Improvements
-            docs:false:Documentation
-            style:false:Styles
-            refactor:false:Code Refactoring
-            test:false:Tests
-            chore:false:Chores
-            ci:false:CI/CD
+          custom_release_rules: feat:minor:Features,fix:patch:Bug Fixes,perf:patch:Performance Improvements,docs:false:Documentation,style:false:Styles,refactor:false:Code Refactoring,test:false:Tests,chore:false:Chores,ci:false:CI/CD
 
       - name: Check if new version should be released
         id: should_release
