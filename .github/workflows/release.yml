@@ -119,7 +119,7 @@ jobs:
                 }
               ],
               "template": "#{{CHANGELOG}}",
-              "pr_template": "- #{{TITLE}} (##{{NUMBER}})"
+              "pr_template": "- #{{TITLE}} (#{{NUMBER}})"
             }
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
