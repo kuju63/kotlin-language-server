@@ -1,0 +1,46 @@
+name: PR Title Check
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+
+jobs:
+  validate-pr-title:
+    name: Validate PR Title
+    runs-on: ubuntu-slim
+    permissions:
+      pull-requests: read
+
+    steps:
+      - name: Check PR title format
+        uses: amannn/action-semantic-pull-request@v5.5.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # Allowed types based on Conventional Commits and CONTRIBUTING.md
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            chore
+            ci
+          # Require subject to start with a lowercase letter (e.g., "add hover support")
+          subjectPattern: ^[a-z].+$
+          subjectPatternError: |
+            The subject "{subject}" found in the pull request title "{title}"
+            didn't match the configured pattern. Please ensure that the subject
+            starts with a lowercase letter.
+          # Scope is optional
+          requireScope: false
+          # Skip validation for bot PRs (e.g., Dependabot)
+          ignoreLabels: |
+            bot
+            dependencies

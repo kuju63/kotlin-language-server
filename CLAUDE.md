@@ -8,8 +8,8 @@ This file provides guidance for AI assistants (like Claude Code) working on this
 
 ### 主要な技術スタック
 
-- **Kotlin 2.0 + K2 Analysis API**: コンパイラの型解析機能を活用
-- **JDK 17、Gradle 8+** (Kotlin DSL)
+- **Kotlin 2.3 + K2 Analysis API**: コンパイラの型解析機能を活用
+- **JDK 21、Gradle 8+** (Kotlin DSL)
 - **LSP4J**: Eclipse LSPフレームワーク（JSON-RPC通信）
 - **SQLite**: インデックス/キャッシュ層（WALモード＋FTS5）
 - **JUnit 5 + MockK**: テストフレームワーク

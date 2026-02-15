@@ -4,7 +4,7 @@
 
 ### 必須
 
-- **JDK**: 17以上（推奨: JDK 17 LTS）
+- **JDK**: 21以上（推奨: JDK 21 LTS）
 - **Gradle**: 8.5以上（Gradle Wrapper付属のため、インストール不要）
 - **メモリ**: 最低2GB RAM（4GB推奨）
 
@@ -32,12 +32,12 @@ JDKがインストールされていない場合:
 **Ubuntu/Debian**:
 ```bash
 sudo apt update
-sudo apt install openjdk-17-jdk
+sudo apt install openjdk-21-jdk
 ```
 
 **macOS (Homebrew)**:
 ```bash
-brew install openjdk@17
+brew install openjdk@21
 ```
 
 **Windows**:
@@ -213,7 +213,7 @@ java -Xmx2G -jar build/libs/kotlin-language-server-0.1.0-SNAPSHOT.jar
 # JDKバージョン確認
 java -version
 
-# JDK 17以上にアップグレード
+# JDK 21以上にアップグレード
 ```
 
 ### エラー: "Execution failed for task ':compileKotlin'"
@@ -285,10 +285,10 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Set up JDK 17
+    - name: Set up JDK 21
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
+        java-version: '21'
         distribution: 'temurin'
     
     - name: Build with Gradle
