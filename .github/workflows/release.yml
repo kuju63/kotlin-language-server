@@ -75,7 +75,7 @@ jobs:
           VERSION: ${{ steps.version.outputs.new_version }}
         run: |
           echo "Building version: $VERSION"
-          ./gradlew clean shadowJar --no-daemon --stacktrace
+          ./gradlew clean build shadowJar --no-daemon --stacktrace
 
       - name: Generate changelog
         if: steps.check_commit.outputs.should_release == 'true'
