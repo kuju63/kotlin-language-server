@@ -73,7 +73,7 @@ jobs:
           VERSION: ${{ steps.version.outputs.new_version }}
         run: |
           echo "Building version: $VERSION"
-          ./gradlew clean build shadowJar --no-daemon --stacktrace
+          gradle clean build shadowJar --no-daemon --stacktrace
 
       - name: Create and push Git tag
         if: steps.should_release.outputs.should_release == 'true'
