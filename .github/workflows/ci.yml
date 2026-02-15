@@ -39,13 +39,13 @@ jobs:
           cache-read-only: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
 
       - name: Build project
-        run: ./gradlew assemble --no-daemon --stacktrace
+        run: gradle assemble --no-daemon --stacktrace
 
       - name: Run tests
-        run: ./gradlew test --no-daemon --stacktrace
+        run: gradle test --no-daemon --stacktrace
 
       - name: Generate test report
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v1.9.1
         if: always()
         with:
           name: JUnit Test Results
@@ -54,7 +54,7 @@ jobs:
           fail-on-error: false
 
       - name: Build Fat JAR
-        run: ./gradlew shadowJar --no-daemon --stacktrace
+        run: gradle shadowJar --no-daemon --stacktrace
 
       - name: Verify JAR integrity
         run: |
