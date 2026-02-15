@@ -37,6 +37,7 @@ jobs:
         with:
           # Read-only cache for forked PRs to prevent caching problematic library versions
           cache-read-only: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+          gradle-version: '8.12'
 
       - name: Build project
         run: gradle assemble --no-daemon --stacktrace
