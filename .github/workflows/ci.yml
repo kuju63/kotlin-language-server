@@ -59,7 +59,7 @@ jobs:
 
       - name: Verify JAR integrity
         run: |
-          JAR_FILE=$(find build/libs -name "kotlin-language-server-*.jar" -type f)
+          JAR_FILE=$(find build/libs -name "kotlin-language-server-*.jar" -type f -print -quit)
           echo "Checking JAR: $JAR_FILE"
 
           # Verify JAR exists
