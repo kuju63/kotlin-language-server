@@ -32,12 +32,12 @@ jobs:
             test
             chore
             ci
-          # Require subject to start with uppercase letter
-          subjectPattern: ^[A-Z].+$
+          # Require subject to start with a lowercase letter (e.g., "add hover support")
+          subjectPattern: ^[a-z].+$
           subjectPatternError: |
             The subject "{subject}" found in the pull request title "{title}"
             didn't match the configured pattern. Please ensure that the subject
-            starts with an uppercase letter.
+            starts with a lowercase letter.
           # Scope is optional
           requireScope: false
           # Skip validation for bot PRs (e.g., Dependabot)
