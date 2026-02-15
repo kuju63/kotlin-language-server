@@ -46,12 +46,20 @@ jobs:
           # Compare new tag with previous tag to determine if a release is needed
           # This is more reliable than checking the latest commit message directly,
           # which could be a merge commit that doesn't match conventional commit patterns
-          if [ "${{ steps.version.outputs.new_tag }}" != "${{ steps.version.outputs.previous_tag }}" ] && [ -n "${{ steps.version.outputs.new_tag }}" ]; then
-            echo "should_release=true" >> $GITHUB_OUTPUT
-            echo "✅ New version detected: ${{ steps.version.outputs.new_tag }} (previous: ${{ steps.version.outputs.previous_tag }})"
+          NEW_TAG="${{ steps.version.outputs.new_tag }}"
+          PREVIOUS_TAG="${{ steps.version.outputs.previous_tag }}"
+
+          # Only attempt a release when a non-empty new tag was calculated
+          if [ -n "$NEW_TAG" ] && [ "$NEW_TAG" != "$PREVIOUS_TAG" ]; then
+            echo "should_release=true" >> "$GITHUB_OUTPUT"
+            echo "✅ New version detected: $NEW_TAG (previous: ${PREVIOUS_TAG:-none})"
           else
-            echo "should_release=false" >> $GITHUB_OUTPUT
-            echo "ℹ️ No new version to release (commit type does not trigger version bump)"
+            echo "should_release=false" >> "$GITHUB_OUTPUT"
+            if [ -z "$NEW_TAG" ]; then
+              echo "ℹ️ No new version to release (no semantic version tag calculated)"
+            else
+              echo "ℹ️ No new version to release (commit type does not trigger version bump)"
+            fi
           fi
 
       - name: Validate Gradle Wrapper
