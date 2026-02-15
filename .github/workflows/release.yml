@@ -19,42 +19,13 @@ jobs:
         with:
           fetch-depth: 0  # Full history for semantic versioning
 
-      - name: Check if release should be created
-        id: check_commit
-        run: |
-          # Get the latest commit message
-          COMMIT_MSG=$(git log -1 --pretty=%B)
-          echo "Latest commit message: $COMMIT_MSG"
-
-          # Check if commit type should trigger a release
-          # Release triggers: feat, fix, or BREAKING CHANGE
-          if echo "$COMMIT_MSG" | grep -qE '^(feat|fix)(\(.*\))?!?:' || echo "$COMMIT_MSG" | grep -q 'BREAKING CHANGE:'; then
-            echo "should_release=true" >> $GITHUB_OUTPUT
-            echo "✅ Commit type triggers release"
-          else
-            echo "should_release=false" >> $GITHUB_OUTPUT
-            echo "ℹ️ Commit type does not trigger release (docs/chore/test/ci/etc)"
-          fi
-
-      - name: Set up JDK 21
-        if: steps.check_commit.outputs.should_release == 'true'
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-
-      - name: Setup Gradle
-        if: steps.check_commit.outputs.should_release == 'true'
-        uses: gradle/actions/setup-gradle@v4
-
       - name: Calculate semantic version
-        if: steps.check_commit.outputs.should_release == 'true'
         id: version
         uses: mathieudutour/github-tag-action@v6.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           dry_run: true
-          default_bump: patch
+          default_bump: false
           # Prefix for version tags
           tag_prefix: v
           # Custom release rules
@@ -69,8 +40,33 @@ jobs:
             chore:false:Chores
             ci:false:CI/CD
 
+      - name: Check if new version should be released
+        id: should_release
+        run: |
+          # Compare new tag with previous tag to determine if a release is needed
+          # This is more reliable than checking the latest commit message directly,
+          # which could be a merge commit that doesn't match conventional commit patterns
+          if [ "${{ steps.version.outputs.new_tag }}" != "${{ steps.version.outputs.previous_tag }}" ] && [ -n "${{ steps.version.outputs.new_tag }}" ]; then
+            echo "should_release=true" >> $GITHUB_OUTPUT
+            echo "✅ New version detected: ${{ steps.version.outputs.new_tag }} (previous: ${{ steps.version.outputs.previous_tag }})"
+          else
+            echo "should_release=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No new version to release (commit type does not trigger version bump)"
+          fi
+
+      - name: Set up JDK 21
+        if: steps.should_release.outputs.should_release == 'true'
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        if: steps.should_release.outputs.should_release == 'true'
+        uses: gradle/actions/setup-gradle@v4
+
       - name: Build Fat JAR with version
-        if: steps.check_commit.outputs.should_release == 'true'
+        if: steps.should_release.outputs.should_release == 'true'
         env:
           VERSION: ${{ steps.version.outputs.new_version }}
         run: |
@@ -78,7 +74,7 @@ jobs:
           ./gradlew clean build shadowJar --no-daemon --stacktrace
 
       - name: Generate changelog
-        if: steps.check_commit.outputs.should_release == 'true'
+        if: steps.should_release.outputs.should_release == 'true'
         id: changelog
         uses: mikepenz/release-changelog-builder-action@v4
         with:
@@ -131,7 +127,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Git tag
-        if: steps.check_commit.outputs.should_release == 'true'
+        if: steps.should_release.outputs.should_release == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -139,7 +135,7 @@ jobs:
           git push origin "v${{ steps.version.outputs.new_version }}"
 
       - name: Create GitHub Release
-        if: steps.check_commit.outputs.should_release == 'true'
+        if: steps.should_release.outputs.should_release == 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.new_version }}
