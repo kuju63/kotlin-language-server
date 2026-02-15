@@ -7,7 +7,7 @@ on:
 jobs:
   release:
     name: Create Release
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     permissions:
       contents: write
       actions: read
@@ -66,6 +66,8 @@ jobs:
       - name: Setup Gradle
         if: steps.should_release.outputs.should_release == 'true'
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.12'
 
       - name: Build Fat JAR with version
         if: steps.should_release.outputs.should_release == 'true'
@@ -88,59 +90,15 @@ jobs:
       - name: Generate changelog
         if: steps.should_release.outputs.should_release == 'true'
         id: changelog
-        uses: mikepenz/release-changelog-builder-action@v4
+        uses: mikepenz/release-changelog-builder-action@v6.1.0
         with:
-          configuration: |
-            {
-              "categories": [
-                {
-                  "title": "## 🚀 Features",
-                  "labels": ["feat", "feature"]
-                },
-                {
-                  "title": "## 🐛 Bug Fixes",
-                  "labels": ["fix", "bug"]
-                },
-                {
-                  "title": "## ⚡ Performance Improvements",
-                  "labels": ["perf", "performance"]
-                },
-                {
-                  "title": "## 📝 Documentation",
-                  "labels": ["docs", "documentation"]
-                },
-                {
-                  "title": "## 🔨 Refactoring",
-                  "labels": ["refactor"]
-                },
-                {
-                  "title": "## 🧪 Tests",
-                  "labels": ["test"]
-                },
-                {
-                  "title": "## 🔧 Chores",
-                  "labels": ["chore"]
-                },
-                {
-                  "title": "## 🤖 CI/CD",
-                  "labels": ["ci"]
-                }
-              ],
-              "label_extractor": [
-                {
-                  "pattern": "^(feat|fix|docs|perf|refactor|test|chore|ci)(\\(.+\\))?!?:.*",
-                  "target": "$1"
-                }
-              ],
-              "template": "#{{CHANGELOG}}",
-              "pr_template": "- #{{TITLE}} (#{{NUMBER}})"
-            }
+          configuration: .github/workflows/release-changelog-config.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release
         if: steps.should_release.outputs.should_release == 'true'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.5.0
         with:
           tag_name: v${{ steps.version.outputs.new_version }}
           name: v${{ steps.version.outputs.new_version }}

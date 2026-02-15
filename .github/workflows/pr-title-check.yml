@@ -11,7 +11,7 @@ on:
 jobs:
   validate-pr-title:
     name: Validate PR Title
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-slim
     permissions:
       pull-requests: read
 
