@@ -118,6 +118,12 @@ jobs:
                   "labels": ["ci"]
                 }
               ],
+              "label_extractor": [
+                {
+                  "pattern": "^(feat|fix|docs|perf|refactor|test|chore|ci)(\\(.+\\))?!?:.*",
+                  "target": "$1"
+                }
+              ],
               "template": "#{{CHANGELOG}}",
               "pr_template": "- #{{TITLE}} (#{{NUMBER}})"
             }
