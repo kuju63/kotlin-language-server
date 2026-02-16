@@ -32,7 +32,7 @@ dependencies {
     
     // Logging
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
-    implementation("ch.qos.logback:logback-classic:1.5.29")
+    implementation("ch.qos.logback:logback-classic:1.5.32")
     implementation("org.slf4j:slf4j-api:2.0.17")
     
     // Testing
