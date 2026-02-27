@@ -17,8 +17,8 @@ repositories {
 
 dependencies {
     // Kotlin Standard Library
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.3.10")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:2.3.10")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.4.0-mars-412")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:2.4.0-mars-412")
     
     // Language Server Protocol (LSP4J)
     implementation("org.eclipse.lsp4j:org.eclipse.lsp4j:1.0.0")
